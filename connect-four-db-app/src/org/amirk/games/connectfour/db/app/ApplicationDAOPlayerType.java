@@ -4,12 +4,11 @@ package org.amirk.games.connectfour.db.app;
 import java.util.List;
 import org.amirk.games.connectfour.db.DAOPlayerType;
 import org.amirk.games.connectfour.entities.PlayerType;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ApplicationDAOPlayerType extends DAOPlayerType {
-    
-    public ApplicationDAOPlayerType(SessionFactory sf){ super(sf); }
     
     @Override
     public List<PlayerType> getList(){

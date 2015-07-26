@@ -12,18 +12,26 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
 public class ApplicationDAOPlayerTypeTest {
     
+    protected static Logger logger = LoggerFactory.getLogger(ApplicationDAOPlayerTypeTest.class);
+    
     @Autowired
     SessionFactory sf;
     
+    @Autowired
+    ApplicationDAOPlayerType dao;
+    
     @Test
     public void shouldGetList(){
-        DAOPlayerType dao = new ApplicationDAOPlayerType(this.sf);
-        List<PlayerType> playerTypes = dao.getList();
-        assertTrue(playerTypes.size() > 0);
+        
+        List<PlayerType> playerTypes = this.dao.getList();
+        assertNotNull(playerTypes);
+        assertTrue("expected player types in test db to be prepopulated", playerTypes.size() > 0);
     }
 }

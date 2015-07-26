@@ -21,5 +21,8 @@ dist/
 **/build/empty/
 **/build/generated-sources/
 
-
+# netbeans metadata
 **/build/test/classes/.netbeans_*
+
+# log related
+**/logs/**

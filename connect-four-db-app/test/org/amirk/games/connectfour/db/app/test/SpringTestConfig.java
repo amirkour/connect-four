@@ -2,20 +2,24 @@
 package org.amirk.games.connectfour.db.app.test;
 
 import java.util.Properties;
+import org.amirk.games.connectfour.entities.PlayerType;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan(basePackages = { "org.amirk.games.connectfour.db.app" })
 public class SpringTestConfig {
     
     @Bean
     public SessionFactory sessionFactory(){
         
         org.hibernate.cfg.Configuration cfg = new org.hibernate.cfg.Configuration();
-        cfg.addPackage("org.amirk.games.connectfour.entities");
+        cfg.addPackage("org.amirk.games.connectfour.entities")
+           .addAnnotatedClass(PlayerType.class);
         
         Properties props = new Properties();
         props.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
