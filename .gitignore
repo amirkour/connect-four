@@ -20,6 +20,8 @@ dist/
 **/build/classes/
 **/build/empty/
 **/build/generated-sources/
+**/build/web/
+**/build/generated/
 
 # netbeans metadata
 **/build/test/classes/.netbeans_*
