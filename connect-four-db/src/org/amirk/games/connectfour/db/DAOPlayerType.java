@@ -6,11 +6,11 @@
 package org.amirk.games.connectfour.db;
 
 import java.util.List;
-import org.amirk.games.connectfour.pojos.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import org.amirk.games.connectfour.entities.PlayerType;
 
 
 @Transactional // also needs @EnableTransactionManagement in a config, see ch 12 of the spring docs

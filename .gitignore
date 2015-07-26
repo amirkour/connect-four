@@ -16,4 +16,4 @@ hs_err_pid*
 
 # NetBeans outputs
 dist/
-build/
+# build/
