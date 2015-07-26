@@ -20,3 +20,6 @@ dist/
 **/build/classes/
 **/build/empty/
 **/build/generated-sources/
+
+
+**/build/test/classes/.netbeans_*
