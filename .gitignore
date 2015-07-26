@@ -25,6 +25,7 @@ dist/
 
 # netbeans metadata
 **/build/test/classes/.netbeans_*
+**/nbproject/private/
 
 # log related
 **/logs/**
