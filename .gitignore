@@ -17,3 +17,6 @@ hs_err_pid*
 # NetBeans outputs
 dist/
 # build/
+**/build/classes/
+**/build/empty/
+**/build/generated-sources/
