@@ -10,7 +10,7 @@
         <div style="width:1000px; margin:auto;">
             <h1 style="text-align:center;">Connect Four Web</h1>
             
-<!--            <a href="<c:url value="/playertypes" />">Player Types</a>-->
+            <a href="<c:url value="/playertypes" />">Player Types</a>
         </div>
     </body>
 </html>
