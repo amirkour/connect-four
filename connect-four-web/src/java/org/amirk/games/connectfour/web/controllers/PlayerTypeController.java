@@ -19,6 +19,9 @@ public class PlayerTypeController {
     @Autowired
     protected DAOPlayerType dao;
     
+    /* use this ctor during testing, to get the dao in */
+    public PlayerTypeController(DAOPlayerType dao){ this.dao = dao; }
+    
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model){
         model.addAttribute("playerTypeList", dao.getList());
