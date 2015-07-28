@@ -19,6 +19,8 @@ public class PlayerTypeController {
     @Autowired
     protected DAOPlayerType dao;
     
+    public PlayerTypeController(){}
+    
     /* use this ctor during testing, to get the dao in */
     public PlayerTypeController(DAOPlayerType dao){ this.dao = dao; }
     
