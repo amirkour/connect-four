@@ -10,6 +10,16 @@
         <div style="width:1000px; margin:auto;">
             <h1 style="text-align:center;">Player Types!?</h1>
             
+            <c:if test="${error != null}">
+                <div style="border:thin solid red;">${error}</div>
+            </c:if>
+            <c:if test="${info != null}">
+                <div style="border:thin solid yellow;">${info}</div>
+            </c:if>
+            <c:if test="${success != null}">
+                <div style="border:thin solid green;">${success}</div>
+            </c:if>
+            
             <c:choose>
                 <c:when test="${playerTypeList == null || playerTypeList.size() <= 0}">
                     <p>No player types found!?</p>
@@ -34,6 +44,15 @@
                 </c:otherwise>
             </c:choose>
             
+            <hr/>
+            <div>
+                <h2>Create new PlayerType</h2>
+                <form method="POST" action="<c:url value="/playertypes/save" />" >
+                    Name <input type="text" name="name" value="" />
+                    <input type="submit" value="Save" />
+                </form>
+            </div>
+            <hr />
             <a href="<c:url value="/" />">home</a>
         </div>
     </body>

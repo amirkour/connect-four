@@ -59,7 +59,7 @@ public class PlayerTypeController {
             return flashErrorAndRedirect(redirectUrl, "Encountered the following error while attempting to save: " + e.toString(), flash);
         }
         
-        return flashSuccessAndRedirect(redirectUrl, "Successfully created new player type " + toSave.getName() + "(" + toSave.getId() + ")", flash);
+        return flashSuccessAndRedirect(redirectUrl, "Successfully created new player type " + toSave.getName() + " (" + toSave.getId() + ")", flash);
     }
     
     protected String redirect(String url){
