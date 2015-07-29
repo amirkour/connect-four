@@ -47,31 +47,30 @@ public class PlayerTypeControllerTest {
     }
     
     @Test
-    public void saveActionThrowsIfNameParamMissing() throws Exception{
+    public void saveActionShouldFlashErrorAndRedirectIfNameParamMissing() throws Exception{
         DAOPlayerType mockDao = mock(DAOPlayerType.class);
         PlayerTypeController ctrl = new PlayerTypeController(mockDao);
         MockMvc mvc = standaloneSetup(ctrl).build();
         
         mvc.perform(post("/playertypes/save"))
-           .andExpect(status().is4xxClientError());
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
         
-        mvc.perform(post("/playertypes/save").param("name", ""))
-           .andExpect(status().is4xxClientError());
+        mvc.perform(post("/playertypes/save").param("name"," "))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
     }
     
     @Test
-    public void saveActionThrowsIfIdPresent() throws Exception{
+    public void saveActionShouldFlashErrorAndRedirectIfIdPresent() throws Exception{
         DAOPlayerType mockDao = mock(DAOPlayerType.class);
         PlayerTypeController ctrl = new PlayerTypeController(mockDao);
         MockMvc mvc = standaloneSetup(ctrl).build();
         
-        mvc.perform(post("/playertypes/save").param("id", "")
+        mvc.perform(post("/playertypes/save").param("id", "1")
                                              .param("name","foo"))
-           .andExpect(status().is4xxClientError());
-        
-        mvc.perform(post("/playertypes/save").param("id","1")
-                                             .param("name","foo"))
-           .andExpect(status().is4xxClientError());
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists(("error")));
     }
     
     @Test
@@ -91,7 +90,8 @@ public class PlayerTypeControllerTest {
         MockMvc mvc = standaloneSetup(ctrl).build();
         
         mvc.perform(post("/playertypes/save").param("name",newName))
-           .andExpect(redirectedUrl("/playertypes"));
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("success"));
         
         verify(mockDao, atLeastOnce()).save(original);
     }
