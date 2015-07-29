@@ -46,6 +46,56 @@ public class PlayerTypeControllerTest {
            .andExpect(view().name("playertypes/list"));
     }
     
+    @Test
+    public void saveActionThrowsIfNameParamMissing() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/save"))
+           .andExpect(status().is4xxClientError());
+        
+        mvc.perform(post("/playertypes/save").param("name", ""))
+           .andExpect(status().is4xxClientError());
+    }
+    
+    @Test
+    public void saveActionThrowsIfIdPresent() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/save").param("id", "")
+                                             .param("name","foo"))
+           .andExpect(status().is4xxClientError());
+        
+        mvc.perform(post("/playertypes/save").param("id","1")
+                                             .param("name","foo"))
+           .andExpect(status().is4xxClientError());
+    }
+    
+    @Test
+    public void saveActionRedirectsToListWithValidParams() throws Exception{
+        String newName = "bar";
+        int id = 123;
+        PlayerType original = new PlayerType();
+        original.setName(newName);
+        
+        PlayerType saved = new PlayerType();
+        saved.setId(id);
+        saved.setName(newName);
+        
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        when(mockDao.save(original)).thenReturn(saved);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/save").param("name",newName))
+           .andExpect(redirectedUrl("/playertypes"));
+        
+        verify(mockDao, atLeastOnce()).save(original);
+    }
+    
     protected List<PlayerType> createDummyPlayerTypes(){
         List<PlayerType> types = new ArrayList<PlayerType>();
         for(int i = 0; i < 1; i++){
