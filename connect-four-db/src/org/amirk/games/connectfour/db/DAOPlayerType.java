@@ -34,4 +34,15 @@ public class DAOPlayerType  {
                    .createCriteria(PlayerType.class)
                    .list();
     }
+    
+    public PlayerType save(PlayerType toSave){
+        if(toSave == null){ throw new NullPointerException("Cannot save null objects"); }
+        if(toSave.getId() > 0){ throw new IllegalArgumentException("Cannot save objects with positive id - did you mean to use 'update' instead?"); }
+        
+        this.sessionFactory
+            .getCurrentSession()
+            .save(toSave);
+        
+        return toSave;
+    }
 }
