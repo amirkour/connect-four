@@ -47,7 +47,8 @@
             <hr/>
             <div>
                 <h2>Create new PlayerType</h2>
-                <form method="POST" action="<c:url value="/playertypes/save" />" >
+                <c:url var="post_url"  value="/playertypes/save" />
+                <form method="POST" action="${post_url}" >
                     Name <input type="text" name="name" value="" />
                     <input type="submit" value="Save" />
                 </form>
