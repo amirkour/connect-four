@@ -1,4 +1,10 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%-- 
+    Document   : globalError
+    Created on : Aug 1, 2015, 12:39:35 PM
+    Author     : AmirKouretchian
+--%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -7,13 +13,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="<c:url value="/css/main.css"/>" type="text/css" />
-        <title>connect four web</title>
+        <title>An Error Occurred</title>
+        <link rel="stylesheet" href="/css/main.css" type="text/css" />
     </head>
     <body>
         <div class="container">
-            <h1 style="text-align:center;">Connect Four Web</h1>
-            
-            <a href="<c:url value="/playertypes" />">Player Types</a>
+            <h2>An Error Has Occurred!</h2>
+            <h2>${message}</h2>
+            <div>${stack}</div>
         </div>
     </body>
 </html>

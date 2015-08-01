@@ -4,13 +4,16 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="<c:url value="/css/main.css"/>" type="text/css" />
         <title>Player Types</title>
     </head>
     <body>
         <c:url var="post_url"  value="/playertypes/save" />
         <c:url var="put_url"   value="/playertypes/update" />
         <c:url var="delete_url"   value="/playertypes/delete" />
-        <div style="width:1000px; margin:auto;">
+        <div class="container">
             <h1 style="text-align:center;">Player Types!?</h1>
             
             <c:if test="${error != null}">
