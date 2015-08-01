@@ -7,6 +7,8 @@
         <title>Player Types</title>
     </head>
     <body>
+        <c:url var="post_url"  value="/playertypes/save" />
+        <c:url var="put_url"   value="/playertypes/update" />
         <div style="width:1000px; margin:auto;">
             <h1 style="text-align:center;">Player Types!?</h1>
             
@@ -28,15 +30,21 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>id</th>
-                                <th>name</th>
+                                <th>id/name/actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="type" items="${playerTypeList}">
                                 <tr>
-                                    <td>${type.id}</td>
-                                    <td>${type.name}</td>
+                                    <td>
+                                        <form method="POST" action="${put_url}">
+                                            <span>(${type.id})</span>
+                                            <input type="text" name="name" value="${type.name}" />
+                                            
+                                            <input type="hidden" name="id" value="${type.id}" />
+                                            <input type="submit" value="Update" />
+                                        </form>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -47,7 +55,6 @@
             <hr/>
             <div>
                 <h2>Create new PlayerType</h2>
-                <c:url var="post_url"  value="/playertypes/save" />
                 <form method="POST" action="${post_url}" >
                     Name <input type="text" name="name" value="" />
                     <input type="submit" value="Save" />

@@ -96,6 +96,74 @@ public class PlayerTypeControllerTest {
         verify(mockDao, atLeastOnce()).save(original);
     }
     
+    @Test
+    public void updateWithoutNumericIdFailsOutright() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/update").param("id",""))
+           .andExpect(status().isBadRequest());
+        
+        mvc.perform(post("/playertypes/update").param("id","hi"))
+           .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    public void updateWithoutValidIdRedirectsWithErrorFlash() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/update").param("name","foo")
+                                               .param("id", "0"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+        
+        mvc.perform(post("/playertypes/update").param("name","foo")
+                                               .param("id", "-1"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+    }
+    
+    @Test
+    public void updateWithoutNameRedirectsWithErrorFlash() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/update").param("name","")
+                                               .param("id", "1"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+        
+        mvc.perform(post("/playertypes/update").param("id", "1"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+    }
+    
+    @Test
+    public void updateWithValidParamsRedirectsWithSuccessFlash() throws Exception{
+        int id = 1;
+        String name = "foo";
+        
+        PlayerType typeToUpdate = new PlayerType();
+        typeToUpdate.setId(id);
+        typeToUpdate.setName(name);
+        
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        when(mockDao.update(typeToUpdate)).thenReturn(typeToUpdate);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/update").param("name",name)
+                                               .param("id", String.valueOf(id)))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("success"));
+        
+        verify(mockDao, atLeastOnce()).update(typeToUpdate);
+    }
+    
     protected List<PlayerType> createDummyPlayerTypes(){
         List<PlayerType> types = new ArrayList<PlayerType>();
         for(int i = 0; i < 1; i++){

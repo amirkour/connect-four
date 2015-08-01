@@ -62,6 +62,26 @@ public class PlayerTypeController {
         return flashSuccessAndRedirect(redirectUrl, "Successfully created new player type " + toSave.getName() + " (" + toSave.getId() + ")", flash);
     }
     
+    @RequestMapping(method=RequestMethod.POST, value = "/update")
+    public String update(PlayerType toUpdate, RedirectAttributes flash){
+        
+        String redirectUrl = "/playertypes";
+        
+        if(toUpdate == null){ return flashErrorAndRedirect(redirectUrl, "Cannot update null player type object", flash); }
+        if(toUpdate.getId() <= 0){ return flashErrorAndRedirect(redirectUrl, "Cannot update player type without a positive/valid id", flash); }
+        if(StringUtils.isBlank(toUpdate.getName())){ return flashErrorAndRedirect(redirectUrl, "Cannot update player type to have a blank name", flash); }
+        
+        try{
+            this.dao.update(toUpdate);
+        }catch(Exception e){
+            // TODO - log this fella
+            return this.flashErrorAndRedirect(redirectUrl, "Encountered the following error: " + e.toString(), flash);
+        }
+        
+        return this.flashSuccessAndRedirect(redirectUrl, "Successfully updated player type " + toUpdate.getName() + " (" + toUpdate.getId() + ")", flash);
+    }
+        
+    
     protected String redirect(String url){
         if(StringUtils.isBlank(url)){ throw new IllegalArgumentException("Cannot redirect to null or empty url"); }
         
@@ -70,16 +90,16 @@ public class PlayerTypeController {
                     "redirect:/" + url;
     }
     
-    protected String flashErrorAndRedirect(String url, String error, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.ERROR, url, error, flash);
+    protected String flashErrorAndRedirect(String url, String message, RedirectAttributes flash){
+        return flashFeedbackAndRedirect(FlashType.ERROR, url, message, flash);
     }
     
-    protected String flashInfoAndRedirect(String url, String error, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.INFO, url, error, flash);
+    protected String flashInfoAndRedirect(String url, String message, RedirectAttributes flash){
+        return flashFeedbackAndRedirect(FlashType.INFO, url, message, flash);
     }
     
-    protected String flashSuccessAndRedirect(String url, String error, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.SUCCESS, url, error, flash);
+    protected String flashSuccessAndRedirect(String url, String message, RedirectAttributes flash){
+        return flashFeedbackAndRedirect(FlashType.SUCCESS, url, message, flash);
     }
     
     protected String flashFeedbackAndRedirect(FlashType type, String url, String message, RedirectAttributes flash){
