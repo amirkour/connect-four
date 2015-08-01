@@ -164,6 +164,64 @@ public class PlayerTypeControllerTest {
         verify(mockDao, atLeastOnce()).update(typeToUpdate);
     }
     
+    
+    
+    
+    
+    
+    
+    @Test
+    public void deleteWithoutNumericIdFailsOutright() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/delete").param("id",""))
+           .andExpect(status().isBadRequest());
+        
+        mvc.perform(post("/playertypes/delete").param("id","hi"))
+           .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    public void deleteWithoutValidIdRedirectsWithErrorFlash() throws Exception{
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/delete").param("name","foo")
+                                               .param("id", "0"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+        
+        mvc.perform(post("/playertypes/delete").param("name","foo")
+                                               .param("id", "-1"))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("error"));
+    }
+    
+    @Test
+    public void deleteWithValidParamsRedirectsWithSuccessFlash() throws Exception{
+        int id = 1;
+        String name = "foo";
+        
+        PlayerType typeToDelete = new PlayerType();
+        typeToDelete.setId(id);
+        typeToDelete.setName(name);
+        
+        DAOPlayerType mockDao = mock(DAOPlayerType.class);
+        when(mockDao.update(typeToDelete)).thenReturn(typeToDelete);
+        PlayerTypeController ctrl = new PlayerTypeController(mockDao);
+        MockMvc mvc = standaloneSetup(ctrl).build();
+        
+        mvc.perform(post("/playertypes/delete").param("name",name)
+                                               .param("id", String.valueOf(id)))
+           .andExpect(redirectedUrl("/playertypes"))
+           .andExpect(flash().attributeExists("success"));
+        
+        verify(mockDao, atLeastOnce()).delete(typeToDelete);
+    }
+    
     protected List<PlayerType> createDummyPlayerTypes(){
         List<PlayerType> types = new ArrayList<PlayerType>();
         for(int i = 0; i < 1; i++){

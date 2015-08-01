@@ -56,4 +56,15 @@ public class DAOPlayerType  {
         
         return toUpdate;
     }
+    
+    public PlayerType delete(PlayerType toDelete){
+        if(toDelete == null){ throw new NullPointerException("Cannot update null objects"); }
+        if(toDelete.getId() <= 0){ throw new IllegalArgumentException("Cannot delete objects with non-positive id"); }
+        
+        this.sessionFactory
+            .getCurrentSession()
+            .delete(toDelete);
+        
+        return toDelete;
+    }
 }

@@ -9,6 +9,7 @@
     <body>
         <c:url var="post_url"  value="/playertypes/save" />
         <c:url var="put_url"   value="/playertypes/update" />
+        <c:url var="delete_url"   value="/playertypes/delete" />
         <div style="width:1000px; margin:auto;">
             <h1 style="text-align:center;">Player Types!?</h1>
             
@@ -37,12 +38,17 @@
                             <c:forEach var="type" items="${playerTypeList}">
                                 <tr>
                                     <td>
-                                        <form method="POST" action="${put_url}">
+                                        <form method="POST" action="${put_url}" style="display:inline-block;">
                                             <span>(${type.id})</span>
                                             <input type="text" name="name" value="${type.name}" />
                                             
                                             <input type="hidden" name="id" value="${type.id}" />
                                             <input type="submit" value="Update" />
+                                        </form>
+                                        <form method="POST" action="${delete_url}" style="display:inline-block;">
+                                            <input type="hidden" name="name" value="${type.name}" />
+                                            <input type="hidden" name="id" value="${type.id}" />
+                                            <input type="submit" value="Delete" />
                                         </form>
                                     </td>
                                 </tr>

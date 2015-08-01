@@ -80,6 +80,24 @@ public class PlayerTypeController {
         
         return this.flashSuccessAndRedirect(redirectUrl, "Successfully updated player type " + toUpdate.getName() + " (" + toUpdate.getId() + ")", flash);
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value = "/delete")
+    public String delete(PlayerType toDelete, RedirectAttributes flash){
+        
+        String redirectUrl = "/playertypes";
+        
+        if(toDelete == null){ return flashErrorAndRedirect(redirectUrl, "Cannot delete null player type object", flash); }
+        if(toDelete.getId() <= 0){ return flashErrorAndRedirect(redirectUrl, "Cannot delete player type without a positive/valid id", flash); }
+        
+        try{
+            this.dao.delete(toDelete);
+        }catch(Exception e){
+            // TODO - log this fella
+            return this.flashErrorAndRedirect(redirectUrl, "Encountered the following error: " + e.toString(), flash);
+        }
+        
+        return this.flashSuccessAndRedirect(redirectUrl, "Successfully deleted player type " + toDelete.getName() + " (" + toDelete.getId() + ")", flash);
+    }
         
     
     protected String redirect(String url){
