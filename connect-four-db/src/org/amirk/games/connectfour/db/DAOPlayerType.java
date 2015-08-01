@@ -45,4 +45,15 @@ public class DAOPlayerType  {
         
         return toSave;
     }
+    
+    public PlayerType update(PlayerType toUpdate){
+        if(toUpdate == null){ throw new NullPointerException("Cannot update null objects"); }
+        if(toUpdate.getId() <= 0){ throw new IllegalArgumentException("Cannot update objects with non-positive id - did you mean to use 'save' instead?"); }
+        
+        this.sessionFactory
+            .getCurrentSession()
+            .update(toUpdate);
+        
+        return toUpdate;
+    }
 }
