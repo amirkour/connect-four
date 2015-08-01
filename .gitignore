@@ -14,4 +14,18 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# NetBeans outputs
 dist/
+# build/
+**/build/classes/
+**/build/empty/
+**/build/generated-sources/
+**/build/web/
+**/build/generated/
+
+# netbeans metadata
+**/build/test/classes/.netbeans_*
+**/nbproject/private/
+
+# log related
+**/logs/**
