@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.amirk.games.connectfour.web.controllers;
 
 import org.amirk.games.connectfour.db.DAOPlayerType;
@@ -17,21 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(value="/playertypes")
-public class PlayerTypeController {
+public class PlayerTypeController extends BaseController {
     
     @Autowired
     protected DAOPlayerType dao;
-    
-    public enum FlashType {
-        
-        ERROR("error"),
-        INFO("info"),
-        SUCCESS("success");
-        
-        private String key;
-        FlashType(String newkey){ this.key = newkey; }
-        String getKey(){ return this.key; }
-    }
     
     public PlayerTypeController(){}
     
@@ -97,31 +82,5 @@ public class PlayerTypeController {
         }
         
         return this.flashSuccessAndRedirect(redirectUrl, "Successfully deleted player type " + toDelete.getName() + " (" + toDelete.getId() + ")", flash);
-    }
-        
-    
-    protected String redirect(String url){
-        if(StringUtils.isBlank(url)){ throw new IllegalArgumentException("Cannot redirect to null or empty url"); }
-        
-        return (url.charAt(0) == '/') ? 
-                    "redirect:" + url : 
-                    "redirect:/" + url;
-    }
-    
-    protected String flashErrorAndRedirect(String url, String message, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.ERROR, url, message, flash);
-    }
-    
-    protected String flashInfoAndRedirect(String url, String message, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.INFO, url, message, flash);
-    }
-    
-    protected String flashSuccessAndRedirect(String url, String message, RedirectAttributes flash){
-        return flashFeedbackAndRedirect(FlashType.SUCCESS, url, message, flash);
-    }
-    
-    protected String flashFeedbackAndRedirect(FlashType type, String url, String message, RedirectAttributes flash){
-        flash.addFlashAttribute(type.getKey(), message);
-        return redirect(url);
     }
 }
