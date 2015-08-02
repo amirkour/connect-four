@@ -1,6 +1,7 @@
 package org.amirk.games.connectfour.entities;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,9 +26,11 @@ public class User implements Serializable {
     public int getId(){return this.id;}
     public void setId(int i){this.id = i;}
 
+    @Column(name="fname")
     public String getFirstName(){return this.firstName;}
     public void setFirstName(String s){this.firstName = s;}
 
+    @Column(name="lname")
     public String getLastName(){return this.lastName;}
     public void setLastName(String s){this.lastName = s;}
 
