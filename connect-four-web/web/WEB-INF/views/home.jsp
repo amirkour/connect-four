@@ -13,8 +13,9 @@
         <div class="container">
             <h1 style="text-align:center;">Connect Four Web</h1>
             
-            <a href="<c:url value="/playertypes" />">Player Types</a>
-            <a href="<c:url value="/playercolors" />">Player Colors</a>
+            <a href="<c:url value="/playertypes" />">Player Types</a><br/>
+            <a href="<c:url value="/playercolors" />">Player Colors</a><br/>
+            <a href="<c:url value="/users" />">Users</a><br/>
         </div>
     </body>
 </html>
