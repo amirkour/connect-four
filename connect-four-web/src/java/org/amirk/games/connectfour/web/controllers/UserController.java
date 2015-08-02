@@ -75,4 +75,21 @@ public class UserController extends BaseController{
         
         return flashSuccessAndRedirect(redirectUrl, "Successfully created new user " + toSave.getEmail() + " (" + toSave.getId() + ")", flash);
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/delete")
+    public String delete(User toDelete, RedirectAttributes flash){
+        String redirectUrl = "/users";
+        
+        if(toDelete == null){ return flashErrorAndRedirect(redirectUrl, "Cannot delete null user", flash); }
+        if(toDelete.getId() <= 0){ return flashErrorAndRedirect(redirectUrl, "Cannot delete user without positive id", flash); }
+        
+        try{
+            this.dao.delete(toDelete);
+        }catch(Exception e){
+            // TODO - log error
+            return flashErrorAndRedirect(redirectUrl, "Failed to delete with the following error: " + e.toString(), flash);
+        }
+        
+        return flashSuccessAndRedirect(redirectUrl, "Successfully deleted user " + toDelete.getEmail(), flash);
+    }
 }
