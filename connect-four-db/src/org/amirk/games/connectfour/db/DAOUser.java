@@ -25,7 +25,7 @@ public class DAOUser {
         this.sessionFactory = sf; 
     }
     
-    public User getById(int id){
+    public User getById(long id){
         return (User)this.sessionFactory
                          .getCurrentSession()
                          .get(User.class, id);

@@ -16,15 +16,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Table(name="users")
 public class User implements Serializable {
     
-    protected int id;
+    protected long id;
     protected String firstName;
     protected String lastName;
     protected String email;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    public int getId(){return this.id;}
-    public void setId(int i){this.id = i;}
+    public long getId(){return this.id;}
+    public void setId(long i){this.id = i;}
 
     @Column(name="fname")
     public String getFirstName(){return this.firstName;}
