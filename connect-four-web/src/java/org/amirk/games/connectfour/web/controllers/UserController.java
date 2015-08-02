@@ -28,4 +28,24 @@ public class UserController extends BaseController{
         model.addAttribute("userList", dao.getList());
         return "users/list";
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value = "/save")
+    public String save(User toSave, RedirectAttributes flash){
+        String redirectUrl = "/users";
+        
+        if(toSave == null){ return flashErrorAndRedirect(redirectUrl, "Cannot save null user object", flash); }
+        if(toSave.getId() > 0){ return flashErrorAndRedirect(redirectUrl, "Cannot save object with positive id - did you mean to update?", flash); }
+        if(StringUtils.isBlank(toSave.getEmail())){ return flashErrorAndRedirect(redirectUrl, "Cannot save without an email", flash); }
+        
+        // TODO - validate email format
+        
+        try{
+            this.dao.save(toSave);
+        }catch(Exception e){
+            // TODO - log this error
+            return flashErrorAndRedirect(redirectUrl, "Encountered the following error while attempting to save: " + e.toString(), flash);
+        }
+        
+        return flashSuccessAndRedirect(redirectUrl, "Successfully created new user " + toSave.getEmail() + " (" + toSave.getId() + ")", flash);
+    }
 }
