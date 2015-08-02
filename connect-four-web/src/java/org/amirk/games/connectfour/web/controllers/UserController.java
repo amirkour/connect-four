@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,6 +28,32 @@ public class UserController extends BaseController{
     public String list(Model model){
         model.addAttribute("userList", dao.getList());
         return "users/list";
+    }
+    
+    @RequestMapping(method=RequestMethod.GET, value="/{id}")
+    public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model){
+        User toEdit = this.dao.getById(id);
+        if(toEdit == null){ return this.flashErrorAndRedirect("/users", "Could not find user with id " + id, flash); }
+        
+        model.addAttribute("user", toEdit);
+        return "users/edit";
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/update")
+    public String update(User toUpdate, RedirectAttributes flash){
+        if(toUpdate == null){ throw new IllegalArgumentException("Cannot update without a user model"); }
+        if(toUpdate.getId() <= 0){ return flashErrorAndRedirect("/users", "Cannot update without a positive id", flash); }
+        if(StringUtils.isBlank(toUpdate.getEmail())){ return flashErrorAndRedirect("/users/" + toUpdate.getId(), "Cannot update without an email address", flash); }
+        
+        // TODO validate email format
+        try{
+            this.dao.update(toUpdate);
+        }catch(Exception e){
+            // TODO - log error?
+            return this.flashErrorAndRedirect("/users/" + toUpdate.getId(), "Failed to update with the following error: " + e.toString(), flash);
+        }
+        
+        return this.flashSuccessAndRedirect("/users/" + toUpdate.getId(), "Update successful", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value = "/save")

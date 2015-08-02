@@ -11,7 +11,6 @@
     </head>
     <body>
         <c:url var="post_url"  value="/users/save" />
-        <%--<c:url var="put_url"   value="/users/update" />--%>
         <c:url var="delete_url"   value="/users/delete" />
         <div class="container">
             <h1 style="text-align:center;">Users!</h1>
@@ -45,7 +44,7 @@
                             <c:forEach var="user" items="${userList}">
                                 <tr>
                                     <td>${user.id}</td>
-                                    <td>${user.email}</td>
+                                    <td><a href="<c:url value="/users/${user.id}" />">${user.email}</a></td>
                                     <td>${user.firstName}</td>
                                     <td>${user.lastName}</td>
                                     <td>
