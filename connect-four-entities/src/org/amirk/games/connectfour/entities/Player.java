@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -26,17 +27,20 @@ public class Player implements Serializable{
     public long getId(){return this.id;}
     public void setId(long i){this.id = i;}
     
-    @OneToOne
+    @OneToOne(optional = false)
+    @JoinColumn(name = "player_type_id", nullable = false)
     @NotNull
     public PlayerType getPlayerType(){ return this.playerType; }
     public void setPlayerType(PlayerType pt){ this.playerType = pt; }
     
-    @OneToOne
+    @OneToOne(optional = false)
+    @JoinColumn(name = "player_color_id", nullable = false)
     @NotNull
     public PlayerColor getPlayerColor() { return playerColor; }
     public void setPlayerColor(PlayerColor playerColor) { this.playerColor = playerColor; }
 
-    @OneToOne
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
