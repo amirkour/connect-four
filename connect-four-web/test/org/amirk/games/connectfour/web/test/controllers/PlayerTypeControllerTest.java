@@ -164,12 +164,6 @@ public class PlayerTypeControllerTest {
         verify(mockDao, atLeastOnce()).update(typeToUpdate);
     }
     
-    
-    
-    
-    
-    
-    
     @Test
     public void deleteWithoutNumericIdFailsOutright() throws Exception{
         DAOPlayerType mockDao = mock(DAOPlayerType.class);
