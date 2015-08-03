@@ -29,3 +29,4 @@ dist/
 
 # log related
 **/logs/**
+**/build/**/log4j*

@@ -16,6 +16,7 @@
             <a href="<c:url value="/playertypes" />">Player Types</a><br/>
             <a href="<c:url value="/playercolors" />">Player Colors</a><br/>
             <a href="<c:url value="/users" />">Users</a><br/>
+            <a href="<c:url value="/players" />">Players</a><br/>
         </div>
     </body>
 </html>
