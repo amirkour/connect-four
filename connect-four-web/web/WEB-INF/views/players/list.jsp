@@ -13,7 +13,7 @@
         <c:url var="post_url"  value="/players/save" />
         <c:url var="delete_url"   value="/players/delete" />
         <div class="container">
-            <h1 style="text-align:center;">Users!</h1>
+            <h1 style="text-align:center;">Players!</h1>
             
             <c:if test="${error != null}">
                 <div style="border:thin solid red;">${error}</div>
