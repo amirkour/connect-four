@@ -61,7 +61,10 @@
             <div>
                 <h2>Create new Player</h2>
                 <form method="POST" action="${post_url}" >
-                    TODO FIELDS
+                    User ID: <input type="text" name="userId" value="" /><br/>
+                    Player Color Id: <input type="text" name="playerColorId" value="" /><br/>
+                    Player Type Id: <input type="text" name="playerTypeId" value="" /><br/>
+                    
                     <input type="submit" value="Save" />
                 </form>
             </div>
