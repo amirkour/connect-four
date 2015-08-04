@@ -44,9 +44,9 @@
                             <c:forEach var="player" items="${playerList}">
                                 <tr>
                                     <td>${player.id}</td>
-                                    <td>${player.playerColor.id}</a></td>
-                                    <td>${player.playerType.id}</td>
-                                    <td>${player.user.id}</td>
+                                    <td>${player.playerColor.name}</a></td>
+                                    <td>${player.playerType.name}</td>
+                                    <td>${player.user.email}</td>
                                     <td>
                                         TODO ACTIONS
                                     </td>
