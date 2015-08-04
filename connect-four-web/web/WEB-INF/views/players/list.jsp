@@ -48,7 +48,10 @@
                                     <td>${player.playerType.name}</td>
                                     <td>${player.user.email}</td>
                                     <td>
-                                        TODO ACTIONS
+                                        <form method="POST" action="${delete_url}" style="display:inline-block;">
+                                            <input type="hidden" value="${player.id}" name="playerId" />
+                                            <input type="submit" value="Delete" />
+                                        </form>
                                     </td>
                                 </tr>
                             </c:forEach>

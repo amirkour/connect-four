@@ -76,4 +76,24 @@ public class PlayerController extends BaseController {
         
         return flashSuccessAndRedirect("/players", "Successfully created new player (" + newPlayer.getId() + ")", flash);
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/delete")
+    public String delete(@RequestParam(value="playerId") String strPlayerId, RedirectAttributes flash){
+        String redirectUrl = "/players";
+        
+        int playerId = NumberUtils.toInt(strPlayerId);
+        if(playerId <= 0){ return flashErrorAndRedirect(redirectUrl, "Cannot delete players without a positive id", flash); }
+        
+        Player toDelete = this.dao.getById(playerId);
+        if(toDelete == null){ return this.flashErrorAndRedirect(redirectUrl, "Cannot delete nonexisting player with id " + playerId, flash); }
+        
+        try{
+            this.dao.delete(toDelete);
+        }catch(Exception e){
+            // TODO - log error
+            return flashErrorAndRedirect(redirectUrl, "Failed to delete with the following error: " + e.toString(), flash);
+        }
+        
+        return flashSuccessAndRedirect(redirectUrl, "Successfully deleted player " + toDelete.getId(), flash);
+    }
 }
