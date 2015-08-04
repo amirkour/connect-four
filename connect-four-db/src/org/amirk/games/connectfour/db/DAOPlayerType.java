@@ -24,6 +24,12 @@ public class DAOPlayerType  {
         this.sessionFactory = sf; 
     }
     
+    public PlayerType getById(int id){
+        return (PlayerType)this.sessionFactory
+                         .getCurrentSession()
+                         .get(PlayerType.class, id);
+    }
+    
     public List<PlayerType> getList(){
         return this.sessionFactory
                    .getCurrentSession()

@@ -24,6 +24,12 @@ public class DAOPlayerColor {
         this.sessionFactory = sf; 
     }
     
+    public PlayerColor getById(int id){
+        return (PlayerColor)this.sessionFactory
+                         .getCurrentSession()
+                         .get(PlayerColor.class, id);
+    }
+    
     public List<PlayerColor> getList(){
         return this.sessionFactory
                    .getCurrentSession()
