@@ -108,4 +108,36 @@ public class PlayerController extends BaseController {
         
         return "players/edit";
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/update")
+    public String update(@RequestParam(value="playerId") String strPlayerId, 
+                       @RequestParam(value="newColorId") String strNewColorId,
+                       @RequestParam(value="newTypeId") String strNewTypeId,
+                       RedirectAttributes flash,
+                       Model model){
+        
+        int playerId = NumberUtils.toInt(strPlayerId);
+        if(playerId <= 0){ return this.flashErrorAndRedirect("/players", "Could not parse player id " + strPlayerId + " to an integer - player update failed!", flash); }
+        
+        int newColorId = NumberUtils.toInt(strNewColorId);
+        if(newColorId <= 0){ return this.flashErrorAndRedirect("/players", "Could not parse new player color " + strNewColorId + " to an integer - player update failed!", flash); }
+        
+        int newTypeId = NumberUtils.toInt(strNewTypeId);
+        if(newTypeId <= 0){ return this.flashErrorAndRedirect("/players", "Could nto parse new player type " + strNewTypeId + " to an integer - player update failed!", flash); }
+        
+        Player toEdit = this.dao.getById(playerId);
+        if(toEdit == null){ return this.flashErrorAndRedirect("/players", "Could not find player with id " + strPlayerId, flash); }
+        
+        PlayerColor newColor = this.daoPlayerColor.getById(newColorId);
+        if(newColor == null){ return this.flashErrorAndRedirect("/players", "Could not find player color with id " + strNewColorId, flash); }
+        
+        PlayerType newType = this.daoPlayerType.getById(newTypeId);
+        if(newType == null){ return this.flashErrorAndRedirect("/players", "Could not find player type with id " + strNewTypeId, flash); }
+        
+        toEdit.setPlayerColor(newColor);
+        toEdit.setPlayerType(newType);
+        this.dao.update(toEdit);
+        
+        return this.flashSuccessAndRedirect("/players/" + toEdit.getId(), "Successfully updated player " + toEdit.getId(), flash);
+    }
 }
