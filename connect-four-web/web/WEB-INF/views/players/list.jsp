@@ -52,6 +52,7 @@
                                             <input type="hidden" value="${player.id}" name="playerId" />
                                             <input type="submit" value="Delete" />
                                         </form>
+                                        <a href="<c:url value="/players/${player.id}" />">Edit</a>
                                     </td>
                                 </tr>
                             </c:forEach>

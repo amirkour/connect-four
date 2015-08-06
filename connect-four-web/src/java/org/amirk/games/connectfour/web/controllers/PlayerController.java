@@ -96,4 +96,16 @@ public class PlayerController extends BaseController {
         
         return flashSuccessAndRedirect(redirectUrl, "Successfully deleted player " + toDelete.getId(), flash);
     }
+    
+    @RequestMapping(method=RequestMethod.GET, value="/{playerId}")
+    public String edit(@PathVariable("playerId") int playerId, RedirectAttributes flash, Model model){
+        Player toEdit = this.dao.getById(playerId);
+        if(toEdit == null){ return this.flashErrorAndRedirect("/players", "Could not find player with id " + playerId, flash); }
+        
+        model.addAttribute("player", toEdit);
+        model.addAttribute("colors", this.daoPlayerColor.getList());
+        model.addAttribute("types", this.daoPlayerType.getList());
+        
+        return "players/edit";
+    }
 }
