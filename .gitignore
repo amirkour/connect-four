@@ -23,6 +23,7 @@ dist/
 **/build/web/
 **/build/generated/
 built-jar.properties
+built-clean.properties
 
 # netbeans metadata
 **/build/test/classes/.netbeans_*
