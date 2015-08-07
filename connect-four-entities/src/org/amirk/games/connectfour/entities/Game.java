@@ -10,5 +10,5 @@ package org.amirk.games.connectfour.entities;
  * @author foo
  */
 public class Game {
-    
+    // just a bogus comment, to try out some git config stuffs
 }
