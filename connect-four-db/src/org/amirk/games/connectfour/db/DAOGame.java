@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import org.amirk.games.connectfour.entities.Game;
-import org.hibernate.criterion.Restrictions;
-
 
 @Transactional // also needs @EnableTransactionManagement in a config, see ch 12 of the spring docs
 @Repository    // also needs a BeanPostProcessor bean, see ch 15 of spring docs
