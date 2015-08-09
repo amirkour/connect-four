@@ -49,7 +49,7 @@ public class AppConfig {
     }
     
     /*
-     * For unit testing DAOs in the web environment, active the dev profile
+     * For unit testing DAOs in the web environment, activate the dev profile
      * to get this dummy/simple data source from spring, and then you
      * don't have to worry about jndi and pooling and such.
      */
