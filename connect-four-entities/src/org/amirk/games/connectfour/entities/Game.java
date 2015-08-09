@@ -49,7 +49,7 @@ public class Game implements Serializable{
     
     @Column(name="board_matrix_json")
     @NotNull
-    public String getBoardMatrixJason(){ return this.boardMatrixJson; }
+    public String getBoardMatrixJson(){ return this.boardMatrixJson; }
     public void setBoardMatrixJson(String s){ this.boardMatrixJson = s; }
     
     
