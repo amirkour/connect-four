@@ -65,7 +65,7 @@
             <div>
                 <h2>Create new Player</h2>
                 <form method="POST" action="${post_url}" >
-                    User ID: <input type="text" name="userId" value="" /><br/>
+                    User ID: <input type="text" name="userId" value="" /> <a href="<c:url value="/users" />">see all users</a><br/>
                     Player Color Id: <input type="text" name="playerColorId" value="" /><br/>
                     Player Type Id: <input type="text" name="playerTypeId" value="" /><br/>
                     
