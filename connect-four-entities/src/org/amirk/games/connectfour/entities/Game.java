@@ -23,7 +23,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Game implements Serializable{
     
     protected long id;
-    protected long winningPlayerId;
+    protected Long winningPlayerId;
     protected String outcomeDescription;
     protected int numberInRowToWin;
     protected String boardMatrixJson;
@@ -35,8 +35,8 @@ public class Game implements Serializable{
     public void setId(long id) { this.id = id; }
     
     @Column(name="winning_player_id")
-    public long getWinningPlayerId(){ return this.winningPlayerId; }
-    public void setWinningPlayerId(long i){ this.winningPlayerId = i; }
+    public Long getWinningPlayerId(){ return this.winningPlayerId; }
+    public void setWinningPlayerId(Long i){ this.winningPlayerId = i; }
     
     @Column(name="outcome")
     public String getOutcomeDescription(){ return this.outcomeDescription; }
