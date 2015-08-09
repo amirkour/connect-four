@@ -37,6 +37,7 @@
                                 <th>id</th>
                                 <th>players</th>
                                 <th>num in row to win</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +46,7 @@
                                     <td>${game.id}</td>
                                     <td>${game.players.size()}</td>
                                     <td>${game.numberInRowToWin}</td>
+                                    <td><a href="<c:url value="/games/${game.id}" />">edit</a></td>
                                 </tr>
                             </c:forEach>
                         </tbody>
