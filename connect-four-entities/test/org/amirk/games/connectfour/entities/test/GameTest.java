@@ -480,7 +480,7 @@ public class GameTest{
     @Test
     public void getHorizontalWinnerFailsForEdgeOfBoardCases() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(3);
+        game.setNumberInRowToWin((short)3);
 
         Player one = new Player();
         one.setId(1);
@@ -516,7 +516,7 @@ public class GameTest{
     @Test
     public void getVerticalWinnerFailsForEdgeOfBoardCases() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(3);
+        game.setNumberInRowToWin((short)3);
 
         Player one = new Player();
         one.setId(1);
@@ -552,7 +552,7 @@ public class GameTest{
     @Test
     public void getDiagonalRightWinnerFailsForEdgeOfBoardCases() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(3);
+        game.setNumberInRowToWin((short)3);
 
         Player one = new Player();
         one.setId(1);
@@ -582,7 +582,7 @@ public class GameTest{
     @Test
     public void getDiagonalLeftWinnerFailsForEdgeOfBoardCases() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(3);
+        game.setNumberInRowToWin((short)3);
 
         Player one = new Player();
         one.setId(1);
@@ -624,7 +624,7 @@ public class GameTest{
     @Test
     public void getHorizontalWinnerFailsIfNoWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -658,7 +658,7 @@ public class GameTest{
     @Test
     public void getVerticalWinnerFailsIfNoWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -692,7 +692,7 @@ public class GameTest{
     @Test
     public void getDiagonalRightWinnerFailsIfNoWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -726,7 +726,7 @@ public class GameTest{
     @Test
     public void getDiagonalLeftWinnerFailsIfNoWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -762,7 +762,7 @@ public class GameTest{
     @Test
     public void getHorizontalWinnerShouldPassForXInARow() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -808,7 +808,7 @@ public class GameTest{
     @Test
     public void getVerticalWinnerShouldPassForXInARow() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -855,7 +855,7 @@ public class GameTest{
     @Test
     public void getDiagonalRightWinnerShouldPassForXInARow() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -892,7 +892,7 @@ public class GameTest{
     @Test
     public void getDiagonalLeftWinnerShouldPassForXInARow() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         Player one = new Player();
         one.setId(1);
@@ -969,7 +969,7 @@ public class GameTest{
     @Test
     public void findWinningPlayerShouldPassIfBoardHasWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         long[][] board = new long[3][3];
         game.setBoardMatrix(board);
@@ -1089,7 +1089,7 @@ public class GameTest{
     @Test
     public void findWinningPlayerShouldFailIfNoWinner() throws Exception{
         Game game = new Game();
-        game.setNumberInRowToWin(2);
+        game.setNumberInRowToWin((short)2);
 
         long[][] board = new long[3][3];
         game.setBoardMatrix(board);

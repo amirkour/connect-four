@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.criteria.Fetch;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -46,9 +47,11 @@ public class Game implements Serializable{
     @Column(name="outcome")
     protected String outcomeDescription;
     
+    // in the database this is a tinyint, which is smaller than a short, but 
+    // java doesn't go any smaller, so we'll just settle for a short
     @Column(name="number_in_row_to_win")
     @NotNull
-    protected int numberInRowToWin;
+    protected short numberInRowToWin;
     
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -87,8 +90,8 @@ public class Game implements Serializable{
     public String getOutcomeDescription(){ return this.outcomeDescription; }
     public void setOutcomeDescription(String s){ this.outcomeDescription = s; }
    
-    public int getNumberInRowToWin(){ return this.numberInRowToWin; }
-    public void setNumberInRowToWin(int i){ this.numberInRowToWin = i; }
+    public short getNumberInRowToWin(){ return this.numberInRowToWin; }
+    public void setNumberInRowToWin(short i){ this.numberInRowToWin = i; }
     
     public String getBoardMatrixJson(){ return this.boardMatrixJson; }
     public void setBoardMatrixJson(String s){
