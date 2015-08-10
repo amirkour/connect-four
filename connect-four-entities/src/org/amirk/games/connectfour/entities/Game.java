@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,20 +18,45 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+// TODO - this object has to use field-level access in hibernate.
+// if it uses property-level access, hibernate will try and persist
+// all the helper functions.
+// the solution is:
+// a. switch back to property-level and put all the helpers
+//    in a separate object (like a GameState or something)
+// b. change all the other POJOs to field-level access
 @Entity
 @Table(name="games")
 public class Game implements Serializable{
     
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     protected long id;
+    
+    @Column(name="winning_player_id")
     protected Long winningPlayerId;
+    
+    @Column(name="outcome")
     protected String outcomeDescription;
+    
+    @Column(name="number_in_row_to_win")
+    @NotNull
     protected int numberInRowToWin;
+    
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="game_players",
+            joinColumns = @JoinColumn( name="game_id"),
+            inverseJoinColumns = @JoinColumn( name="player_id")
+    )
+    @OrderColumn(name="list_index", nullable = false)
     protected List<Player> players;
     
     // this 2d array of ints is the game board, where each row/col tuple
@@ -42,33 +69,27 @@ public class Game implements Serializable{
     // consequently: clients shouldn't interact with the json directly.
     // just interact with this property instead, when you need access
     // to the game board.
+    @Transient
     protected long[][] boardMatrix;
     
     // see notes for boardMatrix - this string is just the json representation
     // of the game board, for persisting/restoring to/from database.
+    @Column(name="board_matrix_json")
+    @NotNull
     protected String boardMatrixJson;
     
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     
-    @Column(name="winning_player_id")
     public Long getWinningPlayerId(){ return this.winningPlayerId; }
     public void setWinningPlayerId(Long i){ this.winningPlayerId = i; }
     
-    @Column(name="outcome")
     public String getOutcomeDescription(){ return this.outcomeDescription; }
     public void setOutcomeDescription(String s){ this.outcomeDescription = s; }
-    
-    @Column(name="number_in_row_to_win")
-    @NotNull
+   
     public int getNumberInRowToWin(){ return this.numberInRowToWin; }
     public void setNumberInRowToWin(int i){ this.numberInRowToWin = i; }
     
-    @Column(name="board_matrix_json")
-    @NotNull
     public String getBoardMatrixJson(){ return this.boardMatrixJson; }
     public void setBoardMatrixJson(String s){
         this.boardMatrixJson = s;
@@ -88,13 +109,6 @@ public class Game implements Serializable{
         this.updateBoardMatrixJsonTo(matrix);
     }
     
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name="game_players",
-            joinColumns = @JoinColumn( name="game_id"),
-            inverseJoinColumns = @JoinColumn( name="player_id")
-    )
-    @OrderColumn(name="list_index", nullable = false)
     public List<Player> getPlayers(){ return this.players; }
     public void setPlayers(List<Player> list){ this.players = list; }
     
