@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import org.amirk.games.connectfour.entities.Game;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.CriteriaSpecification;
 
 @Transactional // also needs @EnableTransactionManagement in a config, see ch 12 of the spring docs
 @Repository    // also needs a BeanPostProcessor bean, see ch 15 of spring docs
@@ -33,6 +35,7 @@ public class DAOGame {
         return this.sessionFactory
                    .getCurrentSession()
                    .createCriteria(Game.class)
+                   .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                    .list();
     }
     
