@@ -51,21 +51,16 @@ public class GameController extends BaseController {
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/update")
-    public String update(Game toUpdate, RedirectAttributes flash){
-        if(toUpdate == null){ throw new IllegalArgumentException("Cannot update without a game model"); }
-        if(toUpdate.getId() <= 0){ return flashErrorAndRedirect("/games", "Cannot update without a positive id", flash); }
-//        
-//        try{
-//            this.dao.update(toUpdate);
-//        }catch(Exception e){
-//            // TODO - log error?
-//            return this.flashErrorAndRedirect("/users/" + toUpdate.getId(), "Failed to update with the following error: " + e.toString(), flash);
-//        }
-//        
-//        return this.flashSuccessAndRedirect("/users/" + toUpdate.getId(), "Update successful", flash);
+    public String update(@RequestParam("id") long id,
+                         @RequestParam("numberInRowToWin") int numberInRowToWin, 
+                         RedirectAttributes flash){
+        Game gameToUpdate = this.dao.getById(id);
+        if(gameToUpdate == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
         
-        // TODO finish this
-        return this.flashInfoAndRedirect("/games/" + toUpdate.getId(), "Not implemented yet!?", flash);
+        gameToUpdate.setNumberInRowToWin(numberInRowToWin);
+        this.dao.update(gameToUpdate);
+        
+        return this.flashInfoAndRedirect("/games/" + gameToUpdate.getId(), "Update Successful", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/{id}/players")
