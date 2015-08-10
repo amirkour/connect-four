@@ -461,11 +461,11 @@ public class Game implements Serializable{
     
     @Override
     public int hashCode(){
-        return new HashCodeBuilder(11,17).append(this.id)
+        return new HashCodeBuilder(17,31).append(this.id)
                                          .append(this.winningPlayerId)
                                          .append(this.outcomeDescription)
                                          .append(this.numberInRowToWin)
-                                         .append(this.boardMatrixJson)
+                                         .append(this.boardMatrix)
                                          .append(this.players)
                                          .toHashCode();
     }
@@ -481,7 +481,7 @@ public class Game implements Serializable{
                                   .append(this.winningPlayerId, other.winningPlayerId)
                                   .append(this.outcomeDescription, other.outcomeDescription)
                                   .append(this.numberInRowToWin, other.numberInRowToWin)
-                                  .append(this.boardMatrixJson, other.boardMatrixJson)
+                                  .append(this.boardMatrix, other.boardMatrix)
                                   .append(this.players, other.players)
                                   .isEquals();
     }
@@ -492,7 +492,7 @@ public class Game implements Serializable{
                                         .append("winningPlayerId", this.winningPlayerId)
                                         .append("outcomeDescription", this.outcomeDescription)
                                         .append("numberInRowToWing", this.numberInRowToWin)
-                                        .append("boardMatrixJson", this.boardMatrixJson)
+                                        .append("boardMatrix", this.boardMatrix)
                                         .append("players", this.players)
                                         .toString();
     }
