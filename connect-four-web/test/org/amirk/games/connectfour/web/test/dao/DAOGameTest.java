@@ -42,12 +42,22 @@ public class DAOGameTest {
     @Test
     public void createGame(){
         Game newGame = new Game();
-        newGame.setNumberInRowToWin(2);
+        newGame.setNumberInRowToWin((short)2);
         newGame.setBoardMatrixJson("hi there");
         this.daoGame.save(newGame);
         
         List<Game> games = this.daoGame.getList();
         assertNotNull(games);
         assertTrue(games.size() > 0);
+    }
+    
+    @Test
+    public void getById(){
+        List<Game> games = this.daoGame.getList();
+        for(Game g : games){
+            List<Player> players = g.getPlayers();
+            if(players.size() > 0){ System.out.println("hi world"); }
+        }
+        System.out.println("ok");
     }
 }

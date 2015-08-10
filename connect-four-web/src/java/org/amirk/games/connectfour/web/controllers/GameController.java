@@ -52,15 +52,17 @@ public class GameController extends BaseController {
     
     @RequestMapping(method=RequestMethod.POST, value="/update")
     public String update(@RequestParam("id") long id,
-                         @RequestParam("numberInRowToWin") int numberInRowToWin, 
+                         @RequestParam("numberInRowToWin") short numberInRowToWin, 
                          RedirectAttributes flash){
         Game gameToUpdate = this.dao.getById(id);
         if(gameToUpdate == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
+        if(numberInRowToWin <= 0){ return this.flashErrorAndRedirect("/games/" + id, "numberInRowToWin cannot be negative", flash); }
+        if(numberInRowToWin >= 128){ return this.flashErrorAndRedirect("/games/" + id, "numberInRowToWin cannot exceed 127", flash); }
         
         gameToUpdate.setNumberInRowToWin(numberInRowToWin);
         this.dao.update(gameToUpdate);
         
-        return this.flashInfoAndRedirect("/games/" + gameToUpdate.getId(), "Update Successful", flash);
+        return this.flashSuccessAndRedirect("/games/" + gameToUpdate.getId(), "Update Successful", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/{id}/players")
