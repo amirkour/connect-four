@@ -87,4 +87,13 @@ public class GameController extends BaseController {
         
         return this.flashSuccessAndRedirect("/games/" + id, "Player " + playerId + " successfully added", flash);
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/delete")
+    public String delete(@RequestParam("id") long id, RedirectAttributes flash){
+        Game gameToDelete = this.dao.getById(id);
+        if(gameToDelete == null){ return this.flashErrorAndRedirect("/games", "Couldn't find game with id " + id, flash); }
+
+        this.dao.delete(gameToDelete);
+        return this.flashSuccessAndRedirect("/games", "Successfully deleted game " + id, flash);
+    }
 }

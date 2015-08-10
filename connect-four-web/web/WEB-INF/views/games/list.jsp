@@ -46,7 +46,13 @@
                                     <td>${game.id}</td>
                                     <td>${game.players.size()}</td>
                                     <td>${game.numberInRowToWin}</td>
-                                    <td><a href="<c:url value="/games/${game.id}" />">edit</a></td>
+                                    <td>
+                                        <form method="POST" action="${delete_url}" style="display:inline-block;">
+                                            <input type="hidden" name="id" value="${game.id}" />
+                                            <input type="submit" value="Delete" />
+                                        </form>
+                                        <a href="<c:url value="/games/${game.id}" />">edit</a>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -55,12 +61,16 @@
             </c:choose>
             <hr/>
             
+            <h2>Create new game</h2>
             <form method="POST" action="${post_url}">
                 Number in row to win <input type="text" name="numberInRowToWin" value="" />
                 
                 <br/>
                 <input type="submit" value="Save" />
             </form>
+            <hr/>
+            
+            <a href="<c:url value="/" />">home</a>
         </div>
     </body>
 </html>
