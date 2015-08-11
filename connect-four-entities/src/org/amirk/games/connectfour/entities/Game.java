@@ -178,6 +178,18 @@ public class Game implements Serializable{
     }
     
     /*
+     * same as occupySpot, except this clears the spot
+     */
+    public void clearSpot(int row, int col) throws Exception {
+        if(this.boardMatrix == null){ throw new NullPointerException("Cannot clear spot when there's a null board matrix"); }
+        if(row < 0 || row >= this.boardMatrix.length){ throw new IndexOutOfBoundsException("Row number " + row + " is out of bounds (the board has " + this.boardMatrix.length + " rows)"); }
+        if(col < 0 || col >= this.boardMatrix[0].length){ throw new IndexOutOfBoundsException("Col number " + col + " is out of bounds (the board has " + this.boardMatrix[0].length + " cols)"); }
+        
+        this.boardMatrix[row][col] = 0;
+        this.updateBoardMatrixJsonTo(this.boardMatrix);
+    }
+    
+    /*
      * Return the player of this game with the given id or null if no such player exists.
      *
      * @param id the id of the player to fetch
