@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.amirk.games.connectfour.db.*;
 import org.amirk.games.connectfour.entities.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping(value="/games")
@@ -77,7 +74,14 @@ public class GameController extends BaseController {
         long[][] board = toEdit.getBoardMatrix();
         System.out.println("The board json is " + toEdit.getBoardMatrixJson());
         List<Player> players = toEdit.getPlayers();
-        Boolean gameIsOver = toEdit.isGameOver();
+        
+        // checking to see if the game is over throws an exception
+        // in cases that we don't care about for the purposes of editing
+        // a game - just catch and ignore those exceptions
+        Boolean gameIsOver = false;
+        try{
+            gameIsOver = toEdit.isGameOver();
+        }catch(Exception e){}
         
         if(board == null || board.length <= 0){
             model.addAttribute("boardHtml", "<div>Board editing disabled - there's no board available for this game!?</div>");
@@ -270,5 +274,20 @@ public class GameController extends BaseController {
 
         this.dao.delete(gameToDelete);
         return this.flashSuccessAndRedirect("/games", "Successfully deleted game " + id, flash);
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/{gameId}/players/{playerId}/delete")
+    public String deletePlayer(@PathVariable("gameId") long gameId,
+                               @PathVariable("playerId") long playerId,
+                               RedirectAttributes flash){
+        Game gameToEdit = this.dao.getById(gameId);
+        if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + gameId, flash); }
+        
+        Player playerToDelete = gameToEdit.getPlayer(playerId);
+        if(playerToDelete == null){ return this.flashInfoAndRedirect("/games/" + gameId, "Player " + playerId + " does not belong to this game - deletion skipped!", flash); }
+        
+        gameToEdit.getPlayers().remove(playerToDelete);
+        this.dao.update(gameToEdit);
+        return this.flashSuccessAndRedirect("/games/" + gameId, "Successfully removed player " + playerId, flash);
     }
 }

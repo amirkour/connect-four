@@ -77,20 +77,27 @@
                                     <td><a href="<c:url value="/users/${player.user.id}" />">${player.user.email}</a></td>
                                     <td><a href="<c:url value="/playercolors" />">${player.playerColor.name}</a></td>
                                     <td><a href="<c:url value="/playertypes" />">${player.playerType.name}</a></td>
-                                    <td><a href="<c:url value="/players/${player.id}" />">edit this player</a></td>
+                                    <td>
+                                        <a href="<c:url value="/players/${player.id}" />">edit this player</a>
+                                        <form method="POST" action="<c:url value="/games/${game.id}/players/${player.id}/delete" />" style="display:inline-block;">
+                                            <input type="submit" value="Delete" />
+                                        </form>
+                                    </td>
                                 </tr>
                             </c:forEach>
                             </tbody>
                         </table>
                     </c:otherwise>
                 </c:choose>
-                        
-                <br/><a href="<c:url value="/players" />">view all available players (or create a new player)</a>
             </div>
-            <form method="POST" action="${add_player_url}">
-                ID of player to add to game: <input type="text" value="" name="newPlayerId" /><br/>
-                <input type="submit" value="Add Player" />
-            </form>
+            
+            <c:if test="${game.players == null || game.players.size() < 2}">
+                <form method="POST" action="${add_player_url}">
+                    ID of player to add to game: <input type="text" value="" name="newPlayerId" /><br/>
+                    <input type="submit" value="Add Player" />
+                </form>
+                <a href="<c:url value="/players" />">view all available players (or create a new player)</a>
+            </c:if>
             <hr/>
 
             <a href="<c:url value="/games" />">back to games</a><br/>
