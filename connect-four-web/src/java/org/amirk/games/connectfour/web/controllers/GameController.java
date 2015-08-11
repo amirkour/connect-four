@@ -147,7 +147,7 @@ public class GameController extends BaseController {
             gameToEdit.occupySpot(playerToOccupy, row, col);
         }catch(Exception e){
             // TODO - log this?
-            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error: " + e.toString(), flash);
+            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to occupy " + row + ", " + col + ": " + e.toString(), flash);
         }
         
         this.dao.update(gameToEdit);
@@ -159,8 +159,22 @@ public class GameController extends BaseController {
                                       @RequestParam("row") int row,
                                       @RequestParam("col") int col,
                                       RedirectAttributes flash){
+        Game gameToEdit = this.dao.getById(gameId);
+        if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + gameId, flash); }
         
-        return this.flashInfoAndRedirect("/games/" + gameId, "clear pieces from board not yet supported!?", flash);
+        long[][] board = gameToEdit.getBoardMatrix();
+        if(board == null){ return this.flashErrorAndRedirect("/games/" + gameId, "Cannot clear pieces from game " + gameId + " - there's no board!", flash); }
+        if(!gameToEdit.isOccupied(row, col)){ return this.flashInfoAndRedirect("/games/" + gameId, row + ", " + col + " is already clear - nothing to do!", flash); }
+        
+        try{
+            gameToEdit.clearSpot(row, col);
+        }catch(Exception e){
+            // TODO - log this?
+            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to clear " + row + ", " + col + ": " + e.toString(), flash);
+        }
+        
+        this.dao.update(gameToEdit);
+        return this.flashSuccessAndRedirect("/games/" + gameId, "Successfully cleared " + row + ", " + col, flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/{id}/board")
