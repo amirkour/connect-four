@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping(value="/games")
@@ -41,13 +43,99 @@ public class GameController extends BaseController {
         return this.flashSuccessAndRedirect(redirectUrl, "Successfully created new game (" + toSave.getId() + ")", flash);
     }
     
+    /*
+     * Helper that returns true if the given list of players has exactly 2
+     * players and those players have different colors associated to them,
+     * false otherwise.
+     */
+    protected Boolean playersHaveDifferentColors(List<Player> players){
+        if(players == null || players.size() != 2){ return false; }
+        
+        Player p1 = players.get(0);
+        Player p2 = players.get(1);
+        
+        PlayerColor p1Color = p1.getPlayerColor();
+        PlayerColor p2Color = p2.getPlayerColor();
+        
+        return p1Color != null &&
+               p2Color != null &&
+               p1Color.getId() != p2Color.getId();
+    }
+    
     @RequestMapping(method=RequestMethod.GET, value="/{id}")
     public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model){
         Game toEdit = this.dao.getById(id);
         if(toEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
         
         model.addAttribute("game", toEdit);
+        
+        // build some html that will render an interactable board, but
+        // only if this game has 2 players w/ opposing colors
+        long[][] board = toEdit.getBoardMatrix();
+        System.out.println("The board json is " + toEdit.getBoardMatrixJson());
+        List<Player> players = toEdit.getPlayers();
+        if(board == null || board.length <= 0){
+            model.addAttribute("boardHtml", "<div>Board editing disabled - there's no board available for this game!?</div>");
+        }else if(players == null || players.size() != 2 || !playersHaveDifferentColors(players)){
+            model.addAttribute("boardHtml", "<div>Board editing disabled - a game must have exactly 2 players w/ opposing colors in order for board editing to be enabled</div>");
+        }else{
+            StringBuilder boardHtmlBuilder = new StringBuilder();
+            boardHtmlBuilder.append("<table>");
+            for(int j = 0; j < board[0].length; j++){
+                boardHtmlBuilder.append("<tr>");
+                for(int i = 0; i < board.length; i++){
+                    boardHtmlBuilder.append("<td>");
+                    for(Player p : toEdit.getPlayers()){
+                        // TODO - replace the forms in this column with an actual color or indication if it's occupied already.
+                        // TODO - get the URL to work somehow
+                        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/games/" + id + "/board/add");
+                        boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.build().toUriString() + "\" >");
+                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"playerId\" value=\"" + p.getId() + "\" />");
+                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
+                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
+                        boardHtmlBuilder.append("<input type=\"submit\" value=\"Player " + p.getId() + "\" />");
+                        boardHtmlBuilder.append("</form>");   
+                    }
+                }
+                boardHtmlBuilder.append("</tr>");
+            }
+            boardHtmlBuilder.append("</table>");
+            model.addAttribute("boardHtml", boardHtmlBuilder.toString());
+        }
+        
         return "games/edit";
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/{id}/board")
+    public String addBoard(@PathVariable("id") long id,
+                           @RequestParam("rows") int rows,
+                           @RequestParam("cols") int cols,
+                           RedirectAttributes flash){
+        Game gameToEdit = this.dao.getById(id);
+        if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
+        
+        long[][] board = gameToEdit.getBoardMatrix();
+        if(board != null){ return this.flashErrorAndRedirect("/games/" + id, "Cannot create a board for game " + id + " - this game already has a board!", flash); }
+        
+        if(rows <= 0 || cols <= 0){ return this.flashErrorAndRedirect("/games/" + id, "The number of rows and cols for a new board must be positive", flash); }
+        
+        System.out.println("board json before: " + (gameToEdit.getBoardMatrixJson() == null ? "none" : gameToEdit.getBoardMatrixJson()));
+        
+        gameToEdit.setBoardMatrix(new long[rows][cols]);
+        
+        System.out.println("board json after: " + (gameToEdit.getBoardMatrixJson() == null ? "none" : gameToEdit.getBoardMatrixJson()));
+        this.dao.update(gameToEdit);
+        return this.flashSuccessAndRedirect("/games/" + id, "Successfully added a board to the game", flash);
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/{id}/board/add")
+    public String addPieceToBoard(@PathVariable("id") long gameId,
+                                  @RequestParam("playerId") long playerId,
+                                  @RequestParam("row") int row,
+                                  @RequestParam("col") int col,
+                                  RedirectAttributes flash){
+        
+        return this.flashInfoAndRedirect("/games/" + gameId, "add pieces to board not yet supported!?", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/update")

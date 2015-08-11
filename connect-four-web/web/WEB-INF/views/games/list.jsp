@@ -37,6 +37,8 @@
                                 <th>id</th>
                                 <th>players</th>
                                 <th>num in row to win</th>
+                                <th>winning player id</th>
+                                <th>outcome</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -46,6 +48,8 @@
                                     <td>${game.id}</td>
                                     <td>${game.players.size()}</td>
                                     <td>${game.numberInRowToWin}</td>
+                                    <td>${game.winningPlayerId}</td>
+                                    <td>${game.outcomeDescription}</td>
                                     <td>
                                         <form method="POST" action="${delete_url}" style="display:inline-block;">
                                             <input type="hidden" name="id" value="${game.id}" />
