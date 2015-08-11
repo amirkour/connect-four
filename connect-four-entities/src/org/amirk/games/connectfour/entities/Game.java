@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.criteria.Fetch;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -77,8 +76,11 @@ public class Game implements Serializable{
     
     // see notes for boardMatrix - this string is just the json representation
     // of the game board, for persisting/restoring to/from database.
-    @Column(name="board_matrix_json")
-    @NotNull
+    //
+    // note that even though this field needs to be persisted, it's marked Transient
+    // here because the property's access level is being overriden/used, so that when
+    // hibernate tries to persist to/from db, we can insert some logic in the property.
+    @Transient
     protected String boardMatrixJson;
     
     public long getId() { return id; }
@@ -93,6 +95,11 @@ public class Game implements Serializable{
     public short getNumberInRowToWin(){ return this.numberInRowToWin; }
     public void setNumberInRowToWin(short i){ this.numberInRowToWin = i; }
     
+    // special case for this property - hibernate needs to use the property, not
+    // the field, for this particular field, so that we can maintain some state.
+    @Column(name="board_matrix_json")
+    @NotNull
+    @Access(AccessType.PROPERTY)
     public String getBoardMatrixJson(){ return this.boardMatrixJson; }
     public void setBoardMatrixJson(String s){
         this.boardMatrixJson = s;
