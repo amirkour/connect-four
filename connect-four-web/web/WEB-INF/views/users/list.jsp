@@ -13,6 +13,7 @@
         <c:url var="post_url"  value="/users/save" />
         <c:url var="delete_url"   value="/users/delete" />
         <c:url var="create_test_user_url" value="/users/save/test" />
+        <c:url var="create_player_url" value="/players/save" />
         <div class="container">
             <h1 style="text-align:center;">Users!</h1>
             
@@ -55,6 +56,12 @@
                                             <input type="hidden" name="email" value="${user.email}" />
                                             <input type="hidden" name="id" value="${user.id}" />
                                             <input type="submit" value="Delete" />
+                                        </form>
+                                        <form method="POST" action="${create_player_url}" style="display:inline-block;">
+                                            <input type="hidden" name="userId" value="${user.id}" />
+                                            <input type="hidden" name="playerColorId" value="1" />
+                                            <input type="hidden" name="playerTypeId" value="1" />
+                                            <input type="submit" value="Generate Player For This User" />
                                         </form>
                                     </td>
                                 </tr>
