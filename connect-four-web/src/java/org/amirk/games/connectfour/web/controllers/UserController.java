@@ -1,8 +1,10 @@
 
 package org.amirk.games.connectfour.web.controllers;
 
-import org.amirk.games.connectfour.db.DAOUser;
-import org.amirk.games.connectfour.entities.User;
+import java.util.List;
+import org.amirk.games.connectfour.db.*;
+import org.amirk.games.connectfour.entities.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -91,5 +93,18 @@ public class UserController extends BaseController{
         }
         
         return flashSuccessAndRedirect(redirectUrl, "Successfully deleted user " + toDelete.getEmail(), flash);
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/save/test")
+    public String createTestUser(RedirectAttributes flash){
+        User newUser = new User();
+        String fname = RandomStringUtils.random(5,true,true);
+        String lname = RandomStringUtils.random(5,true,true);
+        String domain = RandomStringUtils.random(5,true,false);
+        newUser.setEmail(fname + "." + lname + "@" + domain + ".com");
+        newUser.setFirstName(fname);
+        newUser.setLastName(lname);
+        this.dao.save(newUser);
+        return this.flashSuccessAndRedirect("/users", "Successfully created new dummy user with id " + newUser.getId(), flash);
     }
 }

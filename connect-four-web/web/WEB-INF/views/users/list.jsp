@@ -12,6 +12,7 @@
     <body>
         <c:url var="post_url"  value="/users/save" />
         <c:url var="delete_url"   value="/users/delete" />
+        <c:url var="create_test_user_url" value="/users/save/test" />
         <div class="container">
             <h1 style="text-align:center;">Users!</h1>
             
@@ -72,6 +73,11 @@
                     Last Name <input type="text" name="lastName" value=""><br/>
                     <input type="submit" value="Save" />
                 </form>
+                <p>
+                    <form style="display:inline-block;" method="POST" action="${create_test_user_url}">
+                        <input type="submit" value="create random test user" />
+                    </form>
+                </p>
             </div>
             <hr />
             <a href="<c:url value="/" />">home</a>

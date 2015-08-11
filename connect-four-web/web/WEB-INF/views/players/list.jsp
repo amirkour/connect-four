@@ -27,7 +27,7 @@
             
             <c:choose>
                 <c:when test="${playerList == null || playerList.size() <= 0}">
-                    <p>No users found!?</p>
+                    <p>No players found!?</p>
                 </c:when>
                 <c:otherwise>
                     <table>
