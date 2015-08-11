@@ -43,16 +43,14 @@
             <div>Id of winning player: ${game.winningPlayerId}</div>
             ${boardHtml}
             
-            <c:if test="${game.boardMatrix == null || fn:length(game.boardMatrix) <= 0}">
-                <h4>Create a new board</h4>
-                <form method="POST" action="${create_board_url}">
-                    <input type="hidden" name="id" value="${game.id}" />
-                    Number of rows: <input type="text" name="rows" value="" /><br/>
-                    Number of cols: <input type="text" name="cols" value="" /><br/>
-                    <input type="submit" value="Create new board" />
-                </form>
-            </c:if>
-            <div>TODO - delete a board if it exists</div>
+            <h4>Create/Reset board</h4>
+            <p>Use this form to give this game a new board - note that any existing board will be overwritten!</p>
+            <form method="POST" action="${create_board_url}">
+                <input type="hidden" name="id" value="${game.id}" />
+                Number of rows: <input type="text" name="rows" value="" /><br/>
+                Number of cols: <input type="text" name="cols" value="" /><br/>
+                <input type="submit" value="Create new board" />
+            </form>
             <hr/>
 
             <h2>Players</h2>

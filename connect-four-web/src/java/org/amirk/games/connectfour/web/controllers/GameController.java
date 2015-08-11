@@ -3,6 +3,7 @@ package org.amirk.games.connectfour.web.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.amirk.games.connectfour.db.*;
 import org.amirk.games.connectfour.entities.*;
 import org.apache.commons.lang3.StringUtils;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
@@ -63,7 +66,7 @@ public class GameController extends BaseController {
     }
     
     @RequestMapping(method=RequestMethod.GET, value="/{id}")
-    public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model){
+    public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model, HttpServletRequest request){
         Game toEdit = this.dao.getById(id);
         if(toEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
         
@@ -85,17 +88,36 @@ public class GameController extends BaseController {
                 boardHtmlBuilder.append("<tr>");
                 for(int i = 0; i < board.length; i++){
                     boardHtmlBuilder.append("<td>");
-                    for(Player p : toEdit.getPlayers()){
-                        // TODO - replace the forms in this column with an actual color or indication if it's occupied already.
-                        // TODO - get the URL to work somehow
-                        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/games/" + id + "/board/add");
-                        boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.build().toUriString() + "\" >");
-                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"playerId\" value=\"" + p.getId() + "\" />");
+                    
+                    // if the current row/col tuple is occupied, display who occupies it and give the user
+                    // the option to clear that spot.
+                    // otherwise, give the user the ability to occupy the spot by either player
+                    if(toEdit.isOccupied(i,j)){
+                        boardHtmlBuilder.append("<div>" + board[i][j] + "</div>");
+                        
+                        UriComponents uriBuilder = ServletUriComponentsBuilder.fromContextPath(request)
+                                                                              .path("/games/" + id + "/board/clear")
+                                                                              .build();
+                        boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.toUriString() + "\" >");
                         boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
                         boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
-                        boardHtmlBuilder.append("<input type=\"submit\" value=\"Player " + p.getId() + "\" />");
-                        boardHtmlBuilder.append("</form>");   
+                        boardHtmlBuilder.append("<input type=\"submit\" value=\"Clear\" />");
+                        boardHtmlBuilder.append("</form>");
+                    }else{
+                        for(Player p : toEdit.getPlayers()){
+                            UriComponents uriBuilder = ServletUriComponentsBuilder.fromContextPath(request)
+                                                                              .path("/games/" + id + "/board/add")
+                                                                              .build();
+                            boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.encode().toString() + "\" >");
+                            boardHtmlBuilder.append("<input type=\"hidden\" name=\"playerId\" value=\"" + p.getId() + "\" />");
+                            boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
+                            boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
+                            boardHtmlBuilder.append("<input type=\"submit\" value=\"Player " + p.getId() + "\" />");
+                            boardHtmlBuilder.append("</form>");
+                        }
                     }
+                    
+                    boardHtmlBuilder.append("</td>");
                 }
                 boardHtmlBuilder.append("</tr>");
             }
@@ -104,6 +126,41 @@ public class GameController extends BaseController {
         }
         
         return "games/edit";
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/{id}/board/add")
+    public String addPieceToBoard(@PathVariable("id") long gameId,
+                                  @RequestParam("playerId") long playerId,
+                                  @RequestParam("row") int row,
+                                  @RequestParam("col") int col,
+                                  RedirectAttributes flash){
+        Game gameToEdit = this.dao.getById(gameId);
+        if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + gameId, flash); }
+        
+        long[][] board = gameToEdit.getBoardMatrix();
+        if(board == null){ return this.flashErrorAndRedirect("/games/" + gameId, "Cannot add piece to game " + gameId + " - there's no board!", flash); }
+        
+        Player playerToOccupy = gameToEdit.getPlayer(playerId);
+        if(playerToOccupy == null){ return this.flashErrorAndRedirect("/games/" + gameId, "Cannot add piece to game " + gameId + " - player " + playerId + " is not a member of this game!", flash); }
+        
+        try{
+            gameToEdit.occupySpot(playerToOccupy, row, col);
+        }catch(Exception e){
+            // TODO - log this?
+            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error: " + e.toString(), flash);
+        }
+        
+        this.dao.update(gameToEdit);
+        return this.flashSuccessAndRedirect("/games/" + gameId, "Successfully occupied " + row + ", " + col, flash);
+    }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/{id}/board/clear")
+    public String clearPieceFromBoard(@PathVariable("id") long gameId,
+                                      @RequestParam("row") int row,
+                                      @RequestParam("col") int col,
+                                      RedirectAttributes flash){
+        
+        return this.flashInfoAndRedirect("/games/" + gameId, "clear pieces from board not yet supported!?", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/{id}/board")
@@ -115,27 +172,11 @@ public class GameController extends BaseController {
         if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
         
         long[][] board = gameToEdit.getBoardMatrix();
-        if(board != null){ return this.flashErrorAndRedirect("/games/" + id, "Cannot create a board for game " + id + " - this game already has a board!", flash); }
-        
         if(rows <= 0 || cols <= 0){ return this.flashErrorAndRedirect("/games/" + id, "The number of rows and cols for a new board must be positive", flash); }
         
-        System.out.println("board json before: " + (gameToEdit.getBoardMatrixJson() == null ? "none" : gameToEdit.getBoardMatrixJson()));
-        
         gameToEdit.setBoardMatrix(new long[rows][cols]);
-        
-        System.out.println("board json after: " + (gameToEdit.getBoardMatrixJson() == null ? "none" : gameToEdit.getBoardMatrixJson()));
         this.dao.update(gameToEdit);
         return this.flashSuccessAndRedirect("/games/" + id, "Successfully added a board to the game", flash);
-    }
-    
-    @RequestMapping(method=RequestMethod.POST, value="/{id}/board/add")
-    public String addPieceToBoard(@PathVariable("id") long gameId,
-                                  @RequestParam("playerId") long playerId,
-                                  @RequestParam("row") int row,
-                                  @RequestParam("col") int col,
-                                  RedirectAttributes flash){
-        
-        return this.flashInfoAndRedirect("/games/" + gameId, "add pieces to board not yet supported!?", flash);
     }
     
     @RequestMapping(method=RequestMethod.POST, value="/update")
