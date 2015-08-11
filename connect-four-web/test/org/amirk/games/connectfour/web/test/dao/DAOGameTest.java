@@ -9,6 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
 @ActiveProfiles(profiles = {"dev"})
-public class DAOPlayerTest {
-    
+public class DAOGameTest {
     @Autowired
     protected Logger logger;
     
@@ -36,26 +36,28 @@ public class DAOPlayerTest {
     @Autowired
     protected DAOPlayerType daoPT;
     
+    @Autowired
+    protected DAOGame daoGame;
+    
     @Test
-    public void createPlayer(){
-        List<PlayerColor> colors = daoPC.getList();
-        List<PlayerType> types = daoPT.getList();
-        List<User> users = daoUser.getList();
+    public void createGame(){
+        Game newGame = new Game();
+        newGame.setNumberInRowToWin((short)2);
+        newGame.setBoardMatrixJson("hi there");
+        this.daoGame.save(newGame);
         
-        Player newPlayer = new Player();
-        newPlayer.setPlayerColor(colors.get(0));
-        newPlayer.setPlayerType(types.get(0));
-        newPlayer.setUser(users.get(0));
-        
-        this.daoPlayer.save(newPlayer);
-        assertTrue(newPlayer.getId() > 0);
+        List<Game> games = this.daoGame.getList();
+        assertNotNull(games);
+        assertTrue(games.size() > 0);
     }
     
     @Test
-    public void listStuff(){
-        List<Player> list = this.daoPlayer.getList();
-        assertNotNull(list);
-        assertTrue(list.size() == 1);
-        logger.info(list.get(0).toString());
+    public void getById(){
+        List<Game> games = this.daoGame.getList();
+        for(Game g : games){
+            List<Player> players = g.getPlayers();
+            if(players.size() > 0){ System.out.println("hi world"); }
+        }
+        System.out.println("ok");
     }
 }
