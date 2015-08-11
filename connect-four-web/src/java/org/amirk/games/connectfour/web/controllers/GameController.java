@@ -66,7 +66,7 @@ public class GameController extends BaseController {
     }
     
     @RequestMapping(method=RequestMethod.GET, value="/{id}")
-    public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model, HttpServletRequest request){
+    public String edit(@PathVariable("id") long id, RedirectAttributes flash, Model model, HttpServletRequest request) throws Exception{
         Game toEdit = this.dao.getById(id);
         if(toEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
         
@@ -77,6 +77,8 @@ public class GameController extends BaseController {
         long[][] board = toEdit.getBoardMatrix();
         System.out.println("The board json is " + toEdit.getBoardMatrixJson());
         List<Player> players = toEdit.getPlayers();
+        Boolean gameIsOver = toEdit.isGameOver();
+        
         if(board == null || board.length <= 0){
             model.addAttribute("boardHtml", "<div>Board editing disabled - there's no board available for this game!?</div>");
         }else if(players == null || players.size() != 2 || !playersHaveDifferentColors(players)){
@@ -98,22 +100,33 @@ public class GameController extends BaseController {
                         UriComponents uriBuilder = ServletUriComponentsBuilder.fromContextPath(request)
                                                                               .path("/games/" + id + "/board/clear")
                                                                               .build();
-                        boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.toUriString() + "\" >");
-                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
-                        boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
-                        boardHtmlBuilder.append("<input type=\"submit\" value=\"Clear\" />");
-                        boardHtmlBuilder.append("</form>");
-                    }else{
-                        for(Player p : toEdit.getPlayers()){
-                            UriComponents uriBuilder = ServletUriComponentsBuilder.fromContextPath(request)
-                                                                              .path("/games/" + id + "/board/add")
-                                                                              .build();
-                            boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.encode().toString() + "\" >");
-                            boardHtmlBuilder.append("<input type=\"hidden\" name=\"playerId\" value=\"" + p.getId() + "\" />");
+                        
+                        // only give the user the ability to edit the board if the game isn't over
+                        if(!gameIsOver){
+                            boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.toUriString() + "\" >");
                             boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
                             boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
-                            boardHtmlBuilder.append("<input type=\"submit\" value=\"Player " + p.getId() + "\" />");
+                            boardHtmlBuilder.append("<input type=\"submit\" value=\"Clear\" />");
                             boardHtmlBuilder.append("</form>");
+                        }
+                    }else{
+                        for(Player p : toEdit.getPlayers()){
+                            
+                            // if the game is over, just stuff a placeholder here and don't let the user edit
+                            // the board any further
+                            if(gameIsOver){
+                                boardHtmlBuilder.append("<div style=\"width:10px; height:10px;\" />");
+                            }else{
+                                UriComponents uriBuilder = ServletUriComponentsBuilder.fromContextPath(request)
+                                                                                  .path("/games/" + id + "/board/add")
+                                                                                  .build();
+                                boardHtmlBuilder.append("<form method=\"POST\" action=\"" + uriBuilder.encode().toString() + "\" >");
+                                boardHtmlBuilder.append("<input type=\"hidden\" name=\"playerId\" value=\"" + p.getId() + "\" />");
+                                boardHtmlBuilder.append("<input type=\"hidden\" name=\"row\" value=\"" + i + "\" />");
+                                boardHtmlBuilder.append("<input type=\"hidden\" name=\"col\" value=\"" + j + "\" />");
+                                boardHtmlBuilder.append("<input type=\"submit\" value=\"Player " + p.getId() + "\" />");
+                                boardHtmlBuilder.append("</form>");
+                            }
                         }
                     }
                     
@@ -150,6 +163,14 @@ public class GameController extends BaseController {
             return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to occupy " + row + ", " + col + ": " + e.toString(), flash);
         }
         
+        // call the gameOver helper to determine the winning player id and outcome, if present
+        try{
+            gameToEdit.isGameOver();
+        }catch(Exception e){
+            // TODO - log this?
+            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to determine if game is over: " + e.toString(), flash);
+        }
+        
         this.dao.update(gameToEdit);
         return this.flashSuccessAndRedirect("/games/" + gameId, "Successfully occupied " + row + ", " + col, flash);
     }
@@ -173,6 +194,14 @@ public class GameController extends BaseController {
             return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to clear " + row + ", " + col + ": " + e.toString(), flash);
         }
         
+        // call the gameOver helper to determine the winning player id and outcome, if present
+        try{
+            gameToEdit.isGameOver();
+        }catch(Exception e){
+            // TODO - log this?
+            return this.flashErrorAndRedirect("/games/" + gameId, "Encountered the following error while attempting to determine if game is over: " + e.toString(), flash);
+        }
+        
         this.dao.update(gameToEdit);
         return this.flashSuccessAndRedirect("/games/" + gameId, "Successfully cleared " + row + ", " + col, flash);
     }
@@ -184,12 +213,15 @@ public class GameController extends BaseController {
                            RedirectAttributes flash){
         Game gameToEdit = this.dao.getById(id);
         if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + id, flash); }
-        
-        long[][] board = gameToEdit.getBoardMatrix();
         if(rows <= 0 || cols <= 0){ return this.flashErrorAndRedirect("/games/" + id, "The number of rows and cols for a new board must be positive", flash); }
         
         gameToEdit.setBoardMatrix(new long[rows][cols]);
+        
+        // reset the winning player id and outcome, now that the board is fresh
+        gameToEdit.setWinningPlayerId(null);
+        gameToEdit.setOutcomeDescription(null);
         this.dao.update(gameToEdit);
+        
         return this.flashSuccessAndRedirect("/games/" + id, "Successfully added a board to the game", flash);
     }
     
