@@ -32,3 +32,4 @@ built-clean.properties
 # log related
 **/logs/**
 **/build/**/log4j*
+/connect-four-agents/build/
