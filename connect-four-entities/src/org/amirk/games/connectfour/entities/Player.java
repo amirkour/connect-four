@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -49,6 +50,7 @@ public class Player implements Serializable{
      * Convenience helper that returns true if this player object is
      * considered to be human, false otherwise.
      */
+    @Transient
     public Boolean isConsideredHuman(){
         if(this.playerType == null){ return false; }
         
