@@ -483,6 +483,29 @@ public class Game implements Serializable{
         return moves;
     }
     
+    /*
+     * A convenience helper that returns the name of the color of the player
+     * at the given row/col in this game's board, or null if no player is
+     * occupying the given spot, or null if that player has no color.
+     */
+    public String getColorForPlayerAt(int row, int col){
+        long[][] board = this.boardMatrix;
+        if(board == null){ return null; }
+        
+        if(row >= board.length ||
+           row < 0 ||
+           col >= board[0].length ||
+           col < 0){ return null; }
+        
+        Player occupyingPlayer = this.getPlayerWithId(board[row][col]);
+        if(occupyingPlayer == null){ return null; }
+        
+        PlayerColor colorOfPlayer = occupyingPlayer.getPlayerColor();
+        if(colorOfPlayer == null){ return null; }
+        
+        return colofOfPlayer.getName();
+    }
+    
     @Override
     public int hashCode(){
         return new HashCodeBuilder(17,31).append(this.id)
