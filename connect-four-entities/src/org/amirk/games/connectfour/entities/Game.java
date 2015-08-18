@@ -483,20 +483,6 @@ public class Game implements Serializable{
         return moves;
     }
     
-    /*
-     * Helper that returns the player with the given id, or null if
-     * no such player exists.
-     */
-    public Player getPlayer(long id){
-        if(this.players == null || this.players.size() <= 0){ return null; }
-
-        for(Player p : players){
-            if(p.getId() == id){ return p; }
-        }
-
-        return null;
-    }
-    
     @Override
     public int hashCode(){
         return new HashCodeBuilder(17,31).append(this.id)
