@@ -45,6 +45,17 @@ public class Player implements Serializable{
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
     
+    /*
+     * Convenience helper that returns true if this player object is
+     * considered to be human, false otherwise.
+     */
+    public Boolean isConsideredHuman(){
+        if(this.playerType == null){ return false; }
+        
+        String playerTypeName = this.playerType.getName();
+        return playerTypeName != null && playerTypeName.equals("pc");
+    }
+    
     @Override
     public int hashCode(){
         return new HashCodeBuilder(13,17).append(this.id)
