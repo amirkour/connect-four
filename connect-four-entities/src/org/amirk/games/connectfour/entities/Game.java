@@ -503,7 +503,7 @@ public class Game implements Serializable{
         PlayerColor colorOfPlayer = occupyingPlayer.getPlayerColor();
         if(colorOfPlayer == null){ return null; }
         
-        return colofOfPlayer.getName();
+        return colorOfPlayer.getName();
     }
     
     @Override
