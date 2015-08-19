@@ -438,7 +438,7 @@ public class Game implements Serializable{
             
             PlayerColor winningColor = winningPlayer.getPlayerColor();
             if(winningColor != null && !StringUtils.isBlank(winningColor.getName())){
-                this.setOutcomeDescription(winningColor.getName() + " (" + winningPlayer.getId() + ") wins the game!");
+                this.setOutcomeDescription(winningColor.getName() + " wins the game!");
             }else{
                 this.setOutcomeDescription("Player " + winningPlayer.getId() + " wins the game!");
             }
