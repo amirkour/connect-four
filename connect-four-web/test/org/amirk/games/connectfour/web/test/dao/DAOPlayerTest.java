@@ -58,4 +58,11 @@ public class DAOPlayerTest {
         assertTrue(list.size() == 1);
         logger.info(list.get(0).toString());
     }
+    
+    @Test
+    public void shouldGetPlayersWithUserEmail(){
+        List<Player> players = this.daoPlayer.getPlayersWithUserEmail("test.one@phony.com");
+        assertNotNull(players);
+        assertTrue(players.size() > 0);
+    }
 }

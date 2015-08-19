@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import org.amirk.games.connectfour.entities.Player;
+import org.hibernate.criterion.Restrictions;
 
 
 @Transactional // also needs @EnableTransactionManagement in a config, see ch 12 of the spring docs
@@ -28,6 +29,15 @@ public class DAOPlayer {
         return (Player)this.sessionFactory
                          .getCurrentSession()
                          .get(Player.class, id);
+    }
+    
+    public List<Player> getPlayersWithUserEmail(String email){
+        return this.sessionFactory
+                   .getCurrentSession()
+                   .createCriteria(Player.class)
+                   .createCriteria("user")                   // this has to match the property name in Player.java
+                     .add( Restrictions.eq("email", email) ) // and this has to match the property name in User.java
+                   .list();
     }
     
     public List<Player> getList(){
