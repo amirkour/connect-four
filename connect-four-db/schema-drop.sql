@@ -3,7 +3,6 @@ use connectfour;
 
 drop table if exists game_players;
 drop table if exists games;
-drop table if exists game_resolutions;
 
 drop table if exists players;
 drop table if exists users;

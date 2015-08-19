@@ -18,7 +18,9 @@ create table player_types(
 
 insert into player_types(name) values('pc');
 insert into player_types(name) values('npc-left-to-right-agent');
-insert into player_types(name) values('npc-configurable-agent');
+insert into player_types(name) values('npc-configurable-minimax-agent');
+insert into player_types(name) values('npc-offensive-minimax-agent');
+insert into player_types(name) values('npc-defensive-minimax-agent');
 
 --
 -- player_colors
@@ -65,32 +67,19 @@ create table players(
 );
 
 --
--- game_resolutions
---
-create table game_resolutions(
-    id tinyint not null auto_increment,
-    name varchar(16) not null,
-
-    primary key(id)
-);
-
-insert into game_resolutions(name) values('draw');
-insert into game_resolutions(name) values('winner-resolved');
-
---
 -- games
 --
 create table games(
     id int not null auto_increment,
-    game_resolution_id tinyint null,
+    winning_player_id int null,
     outcome varchar(255) null,
     number_in_row_to_win tinyint not null,
     board_matrix_json varchar(255) not null,
 
     primary key(id),
-    index fk_games_id_game_resolutions_id(game_resolution_id),
+    index fx_games_id_players_id(winning_player_id),
 
-    foreign key (game_resolution_id) references game_resolutions(id)
+    foreign key (winning_player_id) references players(id)
 );
 
 --
@@ -99,7 +88,7 @@ create table games(
 create table game_players(
     game_id int not null,
     player_id int not null,
-    list_index int not null,
+    list_index int not null, -- for hibernate to be able to resolve list ordering
 
     primary key(game_id,player_id),
 

@@ -1,0 +1,10 @@
+.container{
+    width:1000px;
+    margin:auto;
+}
+table, th, tr, td{
+    border: thin solid black;
+    border-collapse: collapse;
+}
+th{background-color:blue;color:white;}
+td,th{padding:5px;}
