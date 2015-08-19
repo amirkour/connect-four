@@ -18,7 +18,9 @@ create table player_types(
 
 insert into player_types(name) values('pc');
 insert into player_types(name) values('npc-left-to-right-agent');
-insert into player_types(name) values('npc-configurable-agent');
+insert into player_types(name) values('npc-configurable-minimax-agent');
+insert into player_types(name) values('npc-offensive-minimax-agent');
+insert into player_types(name) values('npc-defensive-minimax-agent');
 
 --
 -- player_colors

@@ -157,7 +157,7 @@ public class GameController extends BaseController {
         long[][] board = gameToEdit.getBoardMatrix();
         if(board == null){ return this.flashErrorAndRedirect("/games/" + gameId, "Cannot add piece to game " + gameId + " - there's no board!", flash); }
         
-        Player playerToOccupy = gameToEdit.getPlayer(playerId);
+        Player playerToOccupy = gameToEdit.getPlayerWithId(playerId);
         if(playerToOccupy == null){ return this.flashErrorAndRedirect("/games/" + gameId, "Cannot add piece to game " + gameId + " - player " + playerId + " is not a member of this game!", flash); }
         
         try{
@@ -283,7 +283,7 @@ public class GameController extends BaseController {
         Game gameToEdit = this.dao.getById(gameId);
         if(gameToEdit == null){ return this.flashErrorAndRedirect("/games", "Could not find game with id " + gameId, flash); }
         
-        Player playerToDelete = gameToEdit.getPlayer(playerId);
+        Player playerToDelete = gameToEdit.getPlayerWithId(playerId);
         if(playerToDelete == null){ return this.flashInfoAndRedirect("/games/" + gameId, "Player " + playerId + " does not belong to this game - deletion skipped!", flash); }
         
         gameToEdit.getPlayers().remove(playerToDelete);

@@ -438,7 +438,7 @@ public class Game implements Serializable{
             
             PlayerColor winningColor = winningPlayer.getPlayerColor();
             if(winningColor != null && !StringUtils.isBlank(winningColor.getName())){
-                this.setOutcomeDescription(winningColor.getName() + " (" + winningPlayer.getId() + ") wins the game!");
+                this.setOutcomeDescription(winningColor.getName() + " wins the game!");
             }else{
                 this.setOutcomeDescription("Player " + winningPlayer.getId() + " wins the game!");
             }
@@ -484,17 +484,26 @@ public class Game implements Serializable{
     }
     
     /*
-     * Helper that returns the player with the given id, or null if
-     * no such player exists.
+     * A convenience helper that returns the name of the color of the player
+     * at the given row/col in this game's board, or null if no player is
+     * occupying the given spot, or null if that player has no color.
      */
-    public Player getPlayer(long id){
-        if(this.players == null || this.players.size() <= 0){ return null; }
-
-        for(Player p : players){
-            if(p.getId() == id){ return p; }
-        }
-
-        return null;
+    public String getColorForPlayerAt(int row, int col){
+        long[][] board = this.boardMatrix;
+        if(board == null){ return null; }
+        
+        if(row >= board.length ||
+           row < 0 ||
+           col >= board[0].length ||
+           col < 0){ return null; }
+        
+        Player occupyingPlayer = this.getPlayerWithId(board[row][col]);
+        if(occupyingPlayer == null){ return null; }
+        
+        PlayerColor colorOfPlayer = occupyingPlayer.getPlayerColor();
+        if(colorOfPlayer == null){ return null; }
+        
+        return colorOfPlayer.getName();
     }
     
     @Override
