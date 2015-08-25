@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import org.amirk.games.connectfour.entities.Player;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 
@@ -44,6 +45,7 @@ public class DAOPlayer {
         return this.sessionFactory
                    .getCurrentSession()
                    .createCriteria(Player.class)
+                   .addOrder( Order.asc("id") )
                    .list();
     }
     
